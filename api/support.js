@@ -26,7 +26,7 @@ export default (ctx) => {
   }
 
   app.get('/:id([0-9]+)', auth.required, (req, res, next) => {
-    const cond = { project_id: req.params.id, author: req.user }
+    const cond = { project_id: req.params.id, author: auth.getUID(req) }
     knex(TNAMES.PARO_SUPPORT).where(cond).select('created')
       .then(info => {
         res.json(info)
@@ -48,7 +48,7 @@ export default (ctx) => {
           .update({ state: 'supprtd' })
           .transacting(req.trx)
       }
-      const body = { project_id: req.params.id, author: req.user }
+      const body = { project_id: req.params.id, author: auth.getUID(req) }
       await knex(TNAMES.PARO_SUPPORT).insert(body).transacting(req.trx)
       req.trx.commit()
       return enough ? 'supprtd' : req.project.state
@@ -73,7 +73,7 @@ export default (ctx) => {
         .where({ id: req.project.id })
         .decrement('support_count', 1)
         .transacting(req.trx)
-      const cond = { project_id: req.params.id, author: req.user }
+      const cond = { project_id: req.params.id, author: auth.getUID(req) }
       await knex(TNAMES.PARO_SUPPORT).where(cond).del().transacting(req.trx)
       req.trx.commit()
     } catch (err) {

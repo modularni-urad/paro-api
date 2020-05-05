@@ -3,7 +3,7 @@ import cors from 'cors'
 import path from 'path'
 import bodyParser from 'body-parser'
 import initErrorHandlers from 'modularni-urad-utils/error_handlers'
-import { initAuth, getUid, required } from 'modularni-urad-utils/auth'
+import { initAuth } from 'modularni-urad-utils/auth'
 import initDB from 'modularni-urad-utils/db'
 import InitApp from './index'
 
@@ -18,14 +18,9 @@ async function init (host, port) {
     preflightContinue: false
   }))
 
-  initAuth(app)
+  const auth = initAuth(app)
 
-  const appContext = {
-    express,
-    knex,
-    auth: { getUid, required },
-    JSONBodyParser
-  }
+  const appContext = { express, knex, auth, JSONBodyParser }
   const gisApp = InitApp(appContext)
   app.use(gisApp)
 

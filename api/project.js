@@ -21,7 +21,10 @@ export default (ctx) => {
     const now = new Date()
     if (now > call[0].submission_end) throw new Error('too late')
     req.body = _.pick(req.body, editables)
-    Object.assign(req.body, { author: req.user, call_id: req.params.id })
+    Object.assign(req.body, {
+      author: auth.getUID(req),
+      call_id: req.params.id
+    })
     const prj = await knex(TNAMES.PARO_PROJECT).returning('id').insert(req.body)
     return prj
   }
