@@ -5,8 +5,7 @@ WORKDIR /usr/src/app
 COPY package.json .
 
 RUN apk add --no-cache --update git \
-  && npm i --only=production --verbose \
-  && npm i modularni-urad-utils --force
+  && npm i --only=production --verbose
 
 # Bundle app source
 COPY . .
