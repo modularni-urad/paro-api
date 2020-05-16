@@ -3,7 +3,8 @@ export const TNAMES = {
   PARO_PROJECT: 'paro_proj',
   PARO_CALL: 'paro_call',
   PARO_SUPPORT: 'paro_support',
-  PARO_VOTES: 'paro_votes'
+  PARO_VOTES: 'paro_votes',
+  PARO_FEEDBACK: 'paro_feedback'
 }
 
 export const CALL_STATUS = {
@@ -23,4 +24,9 @@ export const PROJECT_STATE = {
   UNREAL: 'unreal',
   WILLDO: 'willdo',
   WONTDO: 'wontdo'
+}
+
+export const FEEDBACKSTATUS = {
+  UNRESOLVED: 'unresolved',
+  RESOLVED: 'resolved'
 }

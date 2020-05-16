@@ -2,6 +2,7 @@ import initPaRoCallRoutes from './api/call'
 import initPaRoProjectRoutes from './api/project'
 import initPaRoSupportRoutes from './api/support'
 import initPaRoVotesRoutes from './api/voting_routes'
+import initFeedbackRoutes from './api/feedback_routes'
 import schedulePaRoTasks from './tasks/projectstate'
 
 export default (ctx) => {
@@ -11,6 +12,7 @@ export default (ctx) => {
   app.use('/project', initPaRoProjectRoutes(ctx))
   app.use('/support', initPaRoSupportRoutes(ctx))
   app.use('/votes', initPaRoVotesRoutes(ctx))
+  app.use('/feedback', initFeedbackRoutes(ctx))
 
   schedulePaRoTasks(ctx.knex)
 
