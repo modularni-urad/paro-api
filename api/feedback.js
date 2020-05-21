@@ -1,6 +1,7 @@
-import { TNAMES, CALL_STATUS } from '../consts'
 import _ from 'underscore'
+import { inform } from 'modularni-urad-utils/auth'
 import { whereFilter } from 'knex-filter-loopback'
+import { TNAMES, CALL_STATUS } from '../consts'
 
 async function get (projID, query, knex) {
   Object.assign(query, { project_id: projID })
@@ -20,6 +21,8 @@ async function create (callID, projID, body, UID, knex) {
   body = _.pick(body, 'message', 'status')
   const data = Object.assign({ author: UID, project_id: projID }, body)
   const res = await knex(TNAMES.PARO_FEEDBACK).returning('id').insert(data)
+  const project = await knex(TNAMES.PARO_PROJECT).where({ id: projID }).first()
+  inform(project.author, `Projekt ${project.name} má nový posudek`)
   return Object.assign(data, { id: res[0] })
 }
 
