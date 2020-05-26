@@ -30,3 +30,8 @@ export const FEEDBACKSTATUS = {
   UNRESOLVED: 'unresolved',
   RESOLVED: 'resolved'
 }
+
+export const GROUPS = {
+  FEEDBACK: 'parofeedback',
+  ADMIN: 'paroadmin'
+}
