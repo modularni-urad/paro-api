@@ -1,7 +1,7 @@
 import _ from 'underscore'
-import { inform } from 'modularni-urad-utils/auth'
+import { inform } from 'modularni-urad-utils/auth.js'
 import { whereFilter } from 'knex-filter-loopback'
-import { TNAMES, CALL_STATUS } from '../consts'
+import { TNAMES, CALL_STATUS } from '../consts.mjs'
 
 async function get (projID, query, knex) {
   Object.assign(query, { project_id: projID })

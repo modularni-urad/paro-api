@@ -1,20 +1,23 @@
-import initPaRoCallRoutes from './api/call'
-import initPaRoProjectRoutes from './api/project'
-import initPaRoSupportRoutes from './api/support'
-import initPaRoVotesRoutes from './api/voting_routes'
-import initFeedbackRoutes from './api/feedback_routes'
-import schedulePaRoTasks from './tasks/projectstate'
+import path from 'path'
+import initPaRoCallRoutes from './api/call_routes.js'
+// import initFeedbackRoutes from './api/feedback_routes.js'
+// import schedulePaRoTasks from './tasks/projectstate.js'
 
-export default (ctx) => {
-  const app = ctx.express()
-
-  app.use('/call', initPaRoCallRoutes(ctx))
-  app.use('/project', initPaRoProjectRoutes(ctx))
-  app.use('/support', initPaRoSupportRoutes(ctx))
-  app.use('/votes', initPaRoVotesRoutes(ctx))
-  app.use('/feedback', initFeedbackRoutes(ctx))
-
-  schedulePaRoTasks(ctx.knex)
-
-  return app
+export async function migrateDB (knex, schemas = null) {
+  const opts = {
+    directory: path.join(__dirname, 'migrations')
+  }
+  async function migrate2schema(schemaName) {
+    await knex.raw(`CREATE SCHEMA IF NOT EXISTS "${schemaName}"`)
+    const o = Object.assign({}, opts, { schemaName })
+    process.env.CUSTOM_MIGRATION_SCHEMA = schemaName
+    await knex.migrate.latest(o)
+  }
+  return schemas
+    ? schemas.reduce((p, schema) => {
+        return p.then(() => migrate2schema(schema))
+      }, Promise.resolve())
+    : knex.migrate.latest(opts)
 }
+
+export const init = initPaRoCallRoutes

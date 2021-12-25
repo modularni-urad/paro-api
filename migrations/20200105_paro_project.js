@@ -1,25 +1,30 @@
-import { TNAMES, PROJECT_STATE } from '../consts'
+import { TABLE_NAMES, PROJECT_STATE } from '../consts'
 
 exports.up = (knex, Promise) => {
-  return knex.schema.createTable(TNAMES.PARO_PROJECT, (table) => {
+  const builder = process.env.CUSTOM_MIGRATION_SCHEMA
+    ? knex.schema.withSchema(process.env.CUSTOM_MIGRATION_SCHEMA)
+    : knex.schema
+
+  return builder.createTable(TABLE_NAMES.PARO_PROJECT, (table) => {
     table.increments('id').primary()
-    table.integer('call_id').references('id').inTable(TNAMES.PARO_CALL).notNullable()
+    table.integer('call_id').references('id').inTable(TABLE_NAMES.PARO_CALL).notNullable()
     table.string('name').notNullable()
     table.string('state', 8).notNullable().defaultTo(PROJECT_STATE.NEW)
-    table.integer('support_count').notNullable().defaultTo(0)
     table.string('author').notNullable()
     table.string('desc').notNullable()
+    table.string('poloha').notNullable()
     table.text('content').notNullable()
-    table.text('budget').notNullable()
+    table.json('budget').notNullable()
     table.string('photo')
-    table.integer('total').notNullable()
-    table.integer('positive_votes')
-    table.integer('negative_votes')
     table.timestamp('created').notNullable().defaultTo(knex.fn.now())
     table.unique(['author', 'call_id'])
   })
 }
 
 exports.down = (knex, Promise) => {
-  return knex.schema.dropTable('project')
+  const builder = process.env.CUSTOM_MIGRATION_SCHEMA
+    ? knex.schema.withSchema(process.env.CUSTOM_MIGRATION_SCHEMA)
+    : knex.schema
+
+  return builder.dropTable(TABLE_NAMES.PARO_PROJECT)
 }

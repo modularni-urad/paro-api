@@ -1,54 +1,44 @@
-import { whereFilter } from 'knex-filter-loopback'
-import { TNAMES } from '../consts'
-import _ from 'underscore'
+import { TABLE_NAMES, CALL_STATUS, getQB } from '../consts'
+const conf = {
+  tablename: TABLE_NAMES.PARO_PROJECT,
+  editables: ['name', 'desc', 'content', 'budget', 'photo', 'poloha']
+}
 
 export default (ctx) => {
-  const { knex, auth, JSONBodyParser } = ctx
-  const app = ctx.express()
+  const { knex, ErrorClass } = ctx
+  const _ = ctx.require('underscore')
+  const entityMWBase = ctx.require('entity-api-base').default
+  const MW = entityMWBase(conf, knex, ErrorClass)
 
-  app.get('/', (req, res, next) => {
-    knex(TNAMES.PARO_PROJECT).where(whereFilter(req.query)).then(info => {
-      res.json(info)
-      next()
-    }).catch(next)
-  })
+  return { list, create, update, getCall }
 
-  const editables = ['name', 'desc', 'content', 'budget', 'total', 'photo']
+  function list (query, schema) {
+    query.filter = query.filter || {}
+    return MW.list(query, schema)
+  }
 
-  async function createProject (req) {
-    const call = await knex(TNAMES.PARO_CALL).where({ id: req.params.id })
-    if (call.length === 0) throw new Error(404)
-    const now = new Date()
-    if (now > call[0].submission_end) throw new Error('too late')
-    req.body = _.pick(req.body, editables)
-    Object.assign(req.body, {
-      author: auth.getUID(req),
-      call_id: req.params.id
+  async function create (call, body, user, schema) {
+    if (call.status !== CALL_STATUS.OPEN) {
+      throw new ErrorClass(400, 'call not open')
+    }
+    MW.check_data(body)
+    Object.assign(body, {
+      author: user.id,
+      call_id: call.id
     })
-    const prj = await knex(TNAMES.PARO_PROJECT).returning('id').insert(req.body)
-    return prj
+    return MW.create(body, schema)
   }
 
-  app.post('/:id([0-9]+)', auth.required, JSONBodyParser, (req, res, next) => {
-    createProject(req).then(createdid => (res.json(createdid))).catch(next)
-  })
+  async function getCall (callId, schema) {
+    const p = await getQB(knex, TABLE_NAMES.PARO_CALL, schema).where({ id: callId })
+    if (p.length === 0) throw new ErrorClass(404, 'unknown call')
+    return p[0]
+  }
 
-  async function updateProject (req) {
-    const getProject = knex(TNAMES.PARO_PROJECT).where({ id: req.params.id })
-    const proj = await getProject
-    if (!proj.length) throw new Error(404)
-    const call = await knex(TNAMES.PARO_CALL).where({ id: proj[0].call_id })
-    if (!call.length) throw new Error(404)
+  async function update (call, body, schema) {
     const now = new Date()
-    if (now > call[0].submission_end) throw new Error('too late')
-    req.body = _.pick(req.body, editables)
-    const op = await getProject.update(req.body)
-    return op
+    if (now > call.submission_end) throw new ErrorClass(400, 'too late')
+    MW.check_data(body)
+    return MW.update(call.id, body, schema)
   }
-
-  app.put('/:id([0-9]+)', auth.required, JSONBodyParser, (req, res, next) => {
-    updateProject(req).then(val => (res.json(val))).catch(next)
-  })
-
-  return app
 }

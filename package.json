@@ -4,25 +4,34 @@
   "description": "API pro participativni rozpocet",
   "main": "server.js",
   "scripts": {
-    "start": "node -r esm -r dotenv/config server.js",
-    "startdbg": "node -r esm -r dotenv/config --inspect-brk server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node -r esm server.js",
+    "startdbg": "node -r esm --inspect-brk server.js",
+    "test": "mocha -r esm --exit './test/main.js'",
+    "testdbg": "mocha -r esm --exit --inspect './test/main.js'"
   },
   "author": "Vaclav Klecanda <vencax77@gmail.com> (http://vxk.cz)",
   "license": "MIT",
   "dependencies": {
-    "body-parser": "^1.18.2",
-    "cors": "^2.8.4",
-    "dotenv": "^6.0.0",
     "esm": "^3.2.25",
     "express": "^4.16.2",
-    "knex-filter-loopback": "^0.3.0",
-    "modularni-urad-utils": "https://github.com/modularni-urad/utils",
+    "modularni-urad-utils": "^1.5",
+    "entity-api-base": "^0.2.0",
     "morgan": "^1.9.0",
     "node-schedule": "^1.3.2",
     "underscore": "^1.9.1"
   },
   "engines": {
     "node": ">=12"
+  },
+  "devDependencies": {
+    "axios": "^0.24.0",
+    "chai": "^4.1.2",
+    "chai-http": "^4.2.0",
+    "deepcopy": "^2.0.0",
+    "knex": "^0.95.15",
+    "knex-paginate": "^3.0.0",
+    "mocha": "^9.1.3",
+    "moment": "^2.29.1",
+    "sqlite3": "^4.0.4"
   }
 }

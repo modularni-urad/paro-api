@@ -1,5 +1,5 @@
 import schedule from 'node-schedule'
-import { TNAMES, CALL_STATUS, PROJECT_STATE } from '../consts'
+import { TNAMES, CALL_STATUS, PROJECT_STATE } from '../consts.js'
 
 export default function (knex) {
   sched()

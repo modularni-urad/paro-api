@@ -1,70 +1,43 @@
-import { TNAMES, CALL_STATUS, GROUPS } from '../consts'
-import sched from '../tasks/projectstate'
-import { whereFilter } from 'knex-filter-loopback'
-import _ from 'underscore'
-
-export default (ctx) => {
-  const { knex, JSONBodyParser, auth } = ctx
-  const app = ctx.express()
-
-  app.get('/', (req, res, next) => {
-    knex(TNAMES.PARO_CALL).where(whereFilter(req.query)).then(info => {
-      res.json(info)
-      next()
-    }).catch(next)
-  })
-
-  const editables = [
+import {  TABLE_NAMES, CALL_STATUS, getQB } from '../consts.js'
+const conf = {
+  tablename: TABLE_NAMES.PARO_CALL,
+  editables: [
     'name', 'submission_start', 'submission_end',
     'thinking_start', 'voting_start', 'voting_end',
-    'minimum_support', 'allocation'
+    'minimum_support'
   ]
+}
 
-  app.post('/',
-    auth.requireMembership(GROUPS.ADMIN),
-    JSONBodyParser,
-    (req, res, next) => {
-      req.body = _.pick(req.body, editables)
-      knex(TNAMES.PARO_CALL).returning('id').insert(req.body)
-        .then(savedid => {
-          res.status(201).json(savedid)
-          next()
-        })
-        .catch(next)
-    })
+export default (ctx) => {
+  const { knex, ErrorClass } = ctx
+  const _ = ctx.require('underscore')
+  const entityMWBase = ctx.require('entity-api-base').default
+  const MW = entityMWBase(conf, knex, ErrorClass)
 
-  app.put('/:id([0-9]+)',
-    auth.requireMembership(GROUPS.ADMIN),
-    JSONBodyParser,
-    async (req, res, next) => {
-      try {
-        req.body = _.pick(req.body, editables)
-        const item = knex(TNAMES.PARO_CALL).where({ id: req.params.id })
-        const call = await item
-        if (!call.length) return next(404)
-        if (call[0].status === CALL_STATUS.DRAFT) {
-          res.json(await item.update(req.body))
-          next()
-        } else {
-          next('nondraft call cannot be edited anymore')
-        }
-      } catch (err) {
-        next(err)
-      }
-    })
+  return { list, create, update, start }
 
-  app.put('/:id([0-9]+)/start',
-    auth.requireMembership(GROUPS.ADMIN),
-    (req, res, next) => {
-      const change = { status: CALL_STATUS.OPEN }
-      knex(TNAMES.PARO_CALL).where({ id: req.params.id }).update(change)
-        .then(rowsupdated => {
-          sched(knex)
-          res.json(rowsupdated)
-          next()
-        })
-        .catch(next)
-    })
+  function list (query, schema) {
+    query.filter = query.filter || {}
+    return MW.list(query, schema)
+  }
 
-  return app
+  function create (body, schema) {
+    MW.check_data(body)
+    return MW.create(body, schema)
+  }
+
+  function update(id, body, schema) {
+    MW.check_data(body)
+    return MW.update(id, body, schema)
+  }
+
+  async function start (id, schema) {
+    try {
+      return getQB(knex, TABLE_NAMES.PARO_CALL, schema)
+        .update({ status: CALL_STATUS.OPEN })
+        .where({ id }).returning('*')
+    } catch (err) {
+      throw new ErrorClass(400, err.toString())
+    }
+  }
 }

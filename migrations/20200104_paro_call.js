@@ -1,7 +1,11 @@
-import { TNAMES, CALL_STATUS } from '../consts'
+import { TABLE_NAMES, CALL_STATUS } from '../consts'
 
 exports.up = (knex, Promise) => {
-  return knex.schema.createTable(TNAMES.PARO_CALL, (table) => {
+  const builder = process.env.CUSTOM_MIGRATION_SCHEMA
+    ? knex.schema.withSchema(process.env.CUSTOM_MIGRATION_SCHEMA)
+    : knex.schema
+
+  return builder.createTable(TABLE_NAMES.PARO_CALL, (table) => {
     table.increments('id').primary()
     table.string('name').notNullable()
     table.timestamp('submission_start').notNullable()
@@ -10,16 +14,15 @@ exports.up = (knex, Promise) => {
     table.timestamp('voting_start').notNullable()
     table.timestamp('voting_end').notNullable()
     table.integer('minimum_support').notNullable().default(100)
-    table.float('allocation').notNullable()
     table.string('status').notNullable().default(CALL_STATUS.DRAFT)
-    table.integer('positive_votes')
-    table.integer('negative_votes')
-    table.integer('total_positive_votes')
-    table.integer('total_negative_votes')
     table.timestamp('created').notNullable().defaultTo(knex.fn.now())
   })
 }
 
 exports.down = (knex, Promise) => {
-  return knex.schema.dropTable(TNAMES.PARO_CALL)
+  const builder = process.env.CUSTOM_MIGRATION_SCHEMA
+    ? knex.schema.withSchema(process.env.CUSTOM_MIGRATION_SCHEMA)
+    : knex.schema
+
+  return builder.dropTable(TABLE_NAMES.PARO_CALL)
 }

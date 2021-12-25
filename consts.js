@@ -1,5 +1,5 @@
 
-export const TNAMES = {
+export const TABLE_NAMES = {
   PARO_PROJECT: 'paro_proj',
   PARO_CALL: 'paro_call',
   PARO_SUPPORT: 'paro_support',
@@ -11,7 +11,6 @@ export const CALL_STATUS = {
   DRAFT: 'draft',
   OPEN: 'open',
   VERIFICATION: 'verif',
-  THINKING: 'think',
   VOTING: 'voting',
   DONE: 'done'
 }
@@ -34,4 +33,10 @@ export const FEEDBACKSTATUS = {
 export const GROUPS = {
   FEEDBACK: 'parofeedback',
   ADMIN: 'paroadmin'
+}
+
+export function getQB (knex, tablename, schema) {
+  return schema
+    ? knex(knex.ref(tablename).withSchema(schema))
+    : knex(tablename)
 }
