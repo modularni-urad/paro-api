@@ -40,3 +40,8 @@ export function getQB (knex, tablename, schema) {
     ? knex(knex.ref(tablename).withSchema(schema))
     : knex(tablename)
 }
+export function tableName (tname) {
+  return process.env.CUSTOM_MIGRATION_SCHEMA 
+    ? `${process.env.CUSTOM_MIGRATION_SCHEMA}.${tname}`
+    : tname
+}

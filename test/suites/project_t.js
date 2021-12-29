@@ -3,7 +3,7 @@ module.exports = (g) => {
   const r = g.chai.request(g.baseurl)
 
   const p = {
-    name: 'option1',
+    name: 'paroProject1',
     desc: 'project',
     content: 'sample content',
     budget: '[]',
@@ -11,7 +11,7 @@ module.exports = (g) => {
     poloha: '41,14'
   }
 
-  return describe('projects', () => {
+  return describe('PARO projects', () => {
     //
     it('must not create a new item without auth', async () => {
       const res = await r.post(`/${g.parocall.id}`).send(p)
@@ -43,7 +43,7 @@ module.exports = (g) => {
       res.should.have.header('content-type', /^application\/json/)
     })
 
-    it('shall get the projects', async () => {
+    it('shall get PARO projects', async () => {
       const res = await r.get(`/${g.parocall.id}`)
       res.should.have.status(200)
       res.body.length.should.eql(1)

@@ -35,10 +35,10 @@ export default (ctx) => {
     return p[0]
   }
 
-  async function update (call, body, schema) {
+  async function update (call, projID, body, schema) {
     const now = new Date()
     if (now > call.submission_end) throw new ErrorClass(400, 'too late')
     MW.check_data(body)
-    return MW.update(call.id, body, schema)
+    return MW.update(projID, body, schema)
   }
 }

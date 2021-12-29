@@ -1,4 +1,4 @@
-import { TABLE_NAMES, getQB } from '../consts'
+import { TABLE_NAMES, CALL_STATUS, getQB } from '../consts'
 import { addSupport, removeSupport } from './support'
 
 export default (ctx, app) => {
@@ -14,8 +14,7 @@ export default (ctx, app) => {
       .where({ id: req.project.call_id })
     req.call = found[0]
     // check we are in supportable time window
-    const now = new Date()
-    if (req.call.submission_start >= now || now > req.call.submission_end) {
+    if (req.call.status !== CALL_STATUS.OPEN) {
       return next(new ErrorClass(400, 'NOT_IN_SUPPORTABLE_PHASE'))
     }
     next()

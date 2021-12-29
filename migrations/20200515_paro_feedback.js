@@ -1,11 +1,11 @@
 import _ from 'underscore'
-import { TABLE_NAMES, FEEDBACKSTATUS } from '../consts'
+import { TABLE_NAMES, FEEDBACKSTATUS, tableName } from '../consts'
 
 exports.up = (knex, Promise) => {
   // return knex.schema.createTable(TABLE_NAMES.PARO_FEEDBACK, (table) => {
   //   table.increments('id').primary()
   //   table.integer('project_id').notNullable()
-  //     .references('id').inTable(TABLE_NAMES.PARO_PROJECT)
+  //     .references('id').inTable(tableName(TABLE_NAMES.PARO_PROJECT))
   //   table.string('author').notNullable()
   //   table.string('message').notNullable()
   //   table.enu('status', _.values(FEEDBACKSTATUS)).notNullable()

@@ -24,7 +24,7 @@ export default (ctx, app) => {
   })
 
   app.put('/:id([0-9]+)/:pid([0-9]+)', getCall, auth.session, bodyParser, (req, res, next) => {
-    MW.update(req.call, req.body, req.tenantid).then(updated => {
+    MW.update(req.call, req.params.pid, req.body, req.tenantid).then(updated => {
       res.json(updated)
     }).catch(next)
   })

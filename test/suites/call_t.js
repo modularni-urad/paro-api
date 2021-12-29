@@ -13,7 +13,7 @@ module.exports = (g) => {
     minimum_support: 2
   }
 
-  return describe('calls', () => {
+  return describe('PARO calls', () => {
     //
     it('must not create a new item wihout auth', async () => {
       const res = await r.post('/').send(p)

@@ -1,4 +1,4 @@
-import { TABLE_NAMES, PROJECT_STATE } from '../consts'
+import { TABLE_NAMES, PROJECT_STATE, tableName } from '../consts'
 
 exports.up = (knex, Promise) => {
   const builder = process.env.CUSTOM_MIGRATION_SCHEMA
@@ -7,7 +7,8 @@ exports.up = (knex, Promise) => {
 
   return builder.createTable(TABLE_NAMES.PARO_PROJECT, (table) => {
     table.increments('id').primary()
-    table.integer('call_id').references('id').inTable(TABLE_NAMES.PARO_CALL).notNullable()
+    table.integer('call_id').references('id')
+      .inTable(tableName(TABLE_NAMES.PARO_CALL)).notNullable()
     table.string('name').notNullable()
     table.string('state', 8).notNullable().defaultTo(PROJECT_STATE.NEW)
     table.string('author').notNullable()

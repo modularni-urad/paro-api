@@ -8,6 +8,7 @@ module.exports = (g) => {
   return describe('support', () => {
     //
     it('must not create a new item without auth', async () => {
+      g.mockUser.id = 42
       const res = await r.post(`/${g.parocall.id}/${g.paroproject.id}/support`)
       res.should.have.status(401)
     })
