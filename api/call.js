@@ -17,7 +17,7 @@ export default (ctx) => {
   return { list, create, update, start }
 
   function list (query, schema) {
-    query.filter = query.filter || {}
+    query.filter = query.filter ? JSON.parse(query.filter) : {}
     return MW.list(query, schema)
   }
 

@@ -13,7 +13,7 @@ export default (ctx) => {
   return { list, create, update, getCall }
 
   function list (query, schema) {
-    query.filter = query.filter || {}
+    query.filter = query.filter ? JSON.parse(query.filter) : {}
     return MW.list(query, schema)
   }
 
