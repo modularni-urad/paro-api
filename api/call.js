@@ -4,7 +4,7 @@ const conf = {
   editables: [
     'name', 'submission_start', 'submission_end',
     'thinking_start', 'voting_start', 'voting_end',
-    'minimum_support'
+    'minimum_support', 'budgetlimit'
   ]
 }
 
