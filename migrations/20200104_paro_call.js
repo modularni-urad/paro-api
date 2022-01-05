@@ -13,6 +13,7 @@ exports.up = (knex, Promise) => {
     table.timestamp('thinking_start').notNullable()
     table.timestamp('voting_start').notNullable()
     table.timestamp('voting_end').notNullable()
+    table.float('budgetlimit').notNullable()
     table.integer('minimum_support').notNullable().default(100)
     table.string('status').notNullable().default(CALL_STATUS.DRAFT)
     table.timestamp('created').notNullable().defaultTo(knex.fn.now())

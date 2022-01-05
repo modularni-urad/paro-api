@@ -31,8 +31,8 @@ export const FEEDBACKSTATUS = {
 }
 
 export const GROUPS = {
-  FEEDBACK: 'parofeedback',
-  ADMIN: 'paroadmin'
+  FEEDBACK: 'paro_feedback',
+  ADMIN: 'paro_admins'
 }
 
 export function getQB (knex, tablename, schema) {
