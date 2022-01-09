@@ -18,12 +18,6 @@ module.exports = (g) => {
       res.should.have.status(401)
     })
 
-    it('must not create a new item without mandatory item', async () => {
-      const res = await r.post(`/${g.parocall.id}`).send(_.omit(p, 'name'))
-        .set('Authorization', 'Bearer f')
-      res.should.have.status(400)
-    })
-
     it('must not create a new item coz call not open', async () => {
       const res = await r.post(`/${g.parocall.id}`).send(p)
         .set('Authorization', 'Bearer f')
@@ -34,6 +28,13 @@ module.exports = (g) => {
       const res = await r.put(`/${g.parocall.id}/start`)
         .set('Authorization', 'Bearer f')
       res.should.have.status(200)
+      g.mockUser.groups = _.without(g.mockUser.groups, 'paro_admins')
+    })
+
+    it('must not create a new item without mandatory item', async () => {
+      const res = await r.post(`/${g.parocall.id}`).send(_.omit(p, 'name'))
+        .set('Authorization', 'Bearer f')
+      res.should.have.status(400)
     })
 
     it('shall create a new item pok1', async () => {

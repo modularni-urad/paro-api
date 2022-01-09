@@ -10,7 +10,8 @@ module.exports = (g) => {
     thinking_start: moment().add(7, 'days'),
     voting_start: moment().add(10, 'days'),
     voting_end: moment().add(14, 'days'),
-    minimum_support: 2
+    minimum_support: 2,
+    budgetlimit: 400000
   }
 
   return describe('PARO calls', () => {
@@ -21,7 +22,7 @@ module.exports = (g) => {
     })
 
     it('must not create a new item without mandatory item', async () => {
-      g.mockUser.groups = [ 'paroadmin' ]
+      g.mockUser.groups = [ 'paro_admins' ]
       const res = await r.post('/').send(_.omit(p, 'submission_start'))
         .set('Authorization', 'Bearer f')
       res.should.have.status(400)
