@@ -25,6 +25,7 @@ module.exports = (g) => {
     })
 
     it('shall open the call', async () => {
+      g.mockUser.groups = [ 'paro_admins' ]
       const res = await r.put(`/${g.parocall.id}/start`)
         .set('Authorization', 'Bearer f')
       res.should.have.status(200)

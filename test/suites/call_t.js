@@ -43,6 +43,7 @@ module.exports = (g) => {
       const res = await r.put(`/${g.parocall.id}`).send(change)
         .set('Authorization', 'Bearer f')
       res.should.have.status(200)
+      g.mockUser.groups = _.without(g.mockUser.groups, 'paro_admins')
     })
 
     it('shall get the groups', async () => {
