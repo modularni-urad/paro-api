@@ -22,7 +22,7 @@ export default (ctx, app) => {
 
   app.get('/:id([0-9]+)/:pid([0-9]+)/support', session, required, (req, res, next) => {
     const cond = { project_id: req.params.pid, author: getUID(req) }
-    getQB(knex, TNAMES.PARO_SUPPORT, req.tenantid)
+    getQB(knex, TABLE_NAMES.PARO_SUPPORT, req.tenantid)
         .where(cond).select('created').then(info => {
       res.json(info)
     }).catch(next)
