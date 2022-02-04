@@ -45,7 +45,7 @@ export default (ctx) => {
   async function publish (call, projID, schema) {
     const now = new Date()
     if (now > call.submission_end) throw new ErrorClass(400, 'too late')
-    const body = { state: PROJECT_STATE.NEW }
-    return MW.update(projID, body, schema)
+    return getQB(knex, TABLE_NAMES.PARO_PROJECT, schema)
+      .where({ id: projID }).update({ state: PROJECT_STATE.NEW })
   }
 }
