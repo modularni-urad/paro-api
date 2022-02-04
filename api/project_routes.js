@@ -28,4 +28,10 @@ export default (ctx, app) => {
       res.json(updated)
     }).catch(next)
   })
+
+  app.put('/:id([0-9]+)/:pid([0-9]+)/publish', getCall, auth.session, (req, res, next) => {
+    MW.publish(req.call, req.params.pid, req.tenantid).then(updated => {
+      res.json(updated)
+    }).catch(next)
+  })
 }

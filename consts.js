@@ -16,6 +16,7 @@ export const CALL_STATUS = {
 }
 
 export const PROJECT_STATE = {
+  DRAFT: 'draft',
   NEW: 'new',
   SUPPORTED: 'supprtd',
   UNSUPPORTED: 'unsup',

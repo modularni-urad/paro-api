@@ -68,5 +68,14 @@ module.exports = (g) => {
       res.body[0].name.should.eql('pok1changed')
       res.should.have.status(200)
     })
+
+    it('shall publish project', async () => {
+      const change = {
+        name: 'pok1changed'
+      }
+      const res = await r.put(`/${g.parocall.id}/${g.paroproject.id}/publish`)
+        .send(change).set('Authorization', 'Bearer f')
+      res.should.have.status(200)
+    })
   })
 }

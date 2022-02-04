@@ -10,7 +10,7 @@ exports.up = (knex, Promise) => {
     table.integer('call_id').references('id')
       .inTable(tableName(TABLE_NAMES.PARO_CALL)).notNullable()
     table.string('name').notNullable()
-    table.string('state', 8).notNullable().defaultTo(PROJECT_STATE.NEW)
+    table.string('state', 8).notNullable().defaultTo(PROJECT_STATE.DRAFT)
     table.string('author').notNullable()
     table.string('desc').notNullable()
     table.string('poloha').notNullable()
