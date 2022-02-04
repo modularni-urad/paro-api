@@ -70,12 +70,15 @@ module.exports = (g) => {
     })
 
     it('shall publish project', async () => {
-      const change = {
-        name: 'pok1changed'
-      }
       const res = await r.put(`/${g.parocall.id}/${g.paroproject.id}/publish`)
-        .send(change).set('Authorization', 'Bearer f')
+        .set('Authorization', 'Bearer f')
       res.should.have.status(200)
+    })
+
+    it('MUSTNOT publish project at nondraft state', async () => {
+      const res = await r.put(`/${g.parocall.id}/${g.paroproject.id}/publish`)
+        .set('Authorization', 'Bearer f')
+      res.should.have.status(400)
     })
   })
 }
