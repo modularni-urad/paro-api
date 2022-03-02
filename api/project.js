@@ -36,15 +36,23 @@ export default (ctx) => {
   }
 
   async function update (call, projID, body, schema) {
-    const now = new Date()
-    if (now > call.submission_end) throw new ErrorClass(400, 'too late')
+    if (call.status !== CALL_STATUS.OPEN) {
+      if (call.status === CALL_STATUS.VERIFICATION && async function () {
+          const p = await getQB(knex, TABLE_NAMES.PARO_PROJECT, schema).where({ id: projID })
+          return p.status !== PROJECT_STATE.SUPPORTED
+      }()) {
+        throw new ErrorClass(400, 'cannot edit unsupported project during verifiaction')
+      }
+      throw new ErrorClass(400, 'call not open')
+    }
     MW.check_data(body)
     return MW.update(projID, body, schema)
   }
 
   async function publish (call, projID, schema) {
-    const now = new Date()
-    if (now > call.submission_end) throw new ErrorClass(400, 'too late')
+    if (call.status !== CALL_STATUS.OPEN) {
+      throw new ErrorClass(400, 'call not open')
+    }
     const p = await getQB(knex, TABLE_NAMES.PARO_PROJECT, schema).where({ id: projID })
     if (p[0].state !== PROJECT_STATE.DRAFT) throw new ErrorClass(400, 'not draft')
     return getQB(knex, TABLE_NAMES.PARO_PROJECT, schema)
