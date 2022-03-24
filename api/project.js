@@ -68,7 +68,8 @@ export default (ctx) => {
       author: user.id
     }).first()
     const desiredPath = `paro/${callID}/${p.id}`
-    const req = await axios.get(TOKEN_URL, { paths: [ `${desiredPath}/*` ] })
+    const tokenUrl = TOKEN_URL.replace('{{TENANTID}}', schema)
+    const req = await axios.get(tokenUrl, { paths: [ `${desiredPath}/*` ] })
     return {
       path: desiredPath,
       token: req.body
