@@ -17,6 +17,12 @@ export default (ctx, app) => {
     }).catch(next)
   })
 
+  app.get('/:id([0-9]+)/uploadinfo', auth.session, auth.required, (req, res, next) => {
+    MW.uploadinfo(req.params.id, req.user, req.tenantid).then(found => {
+      res.json(found)
+    }).catch(next)
+  })
+
   app.post('/:id([0-9]+)', getCall, auth.session, auth.required, bodyParser, (req, res, next) => {
     MW.create(req.call, req.body, req.user, req.tenantid).then(created => {
       res.json(created)

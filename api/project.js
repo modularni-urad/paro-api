@@ -1,8 +1,11 @@
+import axios from 'axios'
 import { TABLE_NAMES, CALL_STATUS, getQB, PROJECT_STATE } from '../consts'
 const conf = {
   tablename: TABLE_NAMES.PARO_PROJECT,
   editables: ['name', 'desc', 'content', 'budget', 'photo', 'poloha']
 }
+const TOKEN_URL = process.env.FILESTORAGE_ACCESS_TOKEN_URL
+if (!TOKEN_URL) throw new Error('env.FILESTORAGE_ACCESS_TOKEN_URL not set')
 
 export default (ctx) => {
   const { knex, ErrorClass } = ctx
@@ -10,7 +13,7 @@ export default (ctx) => {
   const entityMWBase = ctx.require('entity-api-base').default
   const MW = entityMWBase(conf, knex, ErrorClass)
 
-  return { list, create, update, getCall, publish }
+  return { list, create, update, getCall, publish, uploadinfo }
 
   function list (query, schema) {
     query.filter = query.filter ? JSON.parse(query.filter) : {}
@@ -57,5 +60,18 @@ export default (ctx) => {
     if (p[0].state !== PROJECT_STATE.DRAFT) throw new ErrorClass(400, 'not draft')
     return getQB(knex, TABLE_NAMES.PARO_PROJECT, schema)
       .where({ id: projID }).update({ state: PROJECT_STATE.NEW })
+  }
+
+  async function uploadinfo (callID, user, schema) {
+    const p = await getQB(knex, TABLE_NAMES.PARO_PROJECT, schema).where({ 
+      call_id: callID,
+      author: user.id
+    }).first()
+    const desiredPath = `paro/${callID}/${p.id}`
+    const req = await axios.get(TOKEN_URL, { paths: [ `${desiredPath}/*` ] })
+    return {
+      path: desiredPath,
+      token: req.body
+    }
   }
 }
