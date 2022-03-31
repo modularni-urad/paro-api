@@ -72,7 +72,7 @@ export default (ctx) => {
     const req = await axios.get(tokenUrl, { data: { paths: [ `${desiredPath}/*` ] } })
     return {
       path: desiredPath,
-      token: req.data
+      token: req.data.token
     }
   }
 }
