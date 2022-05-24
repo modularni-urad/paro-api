@@ -16,7 +16,7 @@ module.exports = (g) => {
   Object.assign(g, {
     port,
     baseurl: `http://localhost:${port}`,
-    mockUser: { id: 42 },
+    mockUser: { id: 42, email: 'gandalf@shire' },
     sessionBasket: []
   })
   g.require = function(name) {

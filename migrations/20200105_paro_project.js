@@ -12,6 +12,7 @@ exports.up = (knex, Promise) => {
     table.string('name').notNullable()
     table.string('state', 8).notNullable().defaultTo(PROJECT_STATE.DRAFT)
     table.string('author').notNullable()
+    table.string('contact').notNullable()
     table.string('desc').notNullable()
     table.string('poloha').notNullable()
     table.text('content').notNullable()

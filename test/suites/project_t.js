@@ -50,6 +50,7 @@ module.exports = (g) => {
       res.should.have.status(200)
       res.body.length.should.eql(1)
       res.body[0].name.should.eql(p.name)
+      res.body[0].contact.should.eql('gandalf@shire')
       g.paroproject = res.body[0]
     })
 

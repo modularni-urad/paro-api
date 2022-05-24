@@ -27,6 +27,7 @@ export default (ctx) => {
     MW.check_data(body)
     Object.assign(body, {
       author: user.id,
+      contact: user.email || user.Email,
       call_id: call.id
     })
     return MW.create(body, schema)
