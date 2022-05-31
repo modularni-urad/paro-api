@@ -26,7 +26,7 @@ module.exports = (g) => {
 
     it('shall open the call', async () => {
       g.mockUser.groups = [ 'paro_admins' ]
-      const res = await r.put(`/${g.parocall.id}/start`)
+      const res = await r.put(`/${g.parocall.id}/forward`)
         .set('Authorization', 'Bearer f')
       res.should.have.status(200)
       g.mockUser.groups = _.without(g.mockUser.groups, 'paro_admins')

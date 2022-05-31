@@ -2,12 +2,13 @@ import path from 'path'
 import express from 'express'
 import dbinit from './dbinit'
 import { initErrorHandlers, APIError } from 'modularni-urad-utils'
+import surveyMock from './survey_mock'
 import { attachPaginate } from 'knex-paginate'
 const SessionServiceMock = require('modularni-urad-utils/test/mocks/sessionService')
 
 module.exports = (g) => {
-  process.env.DATABASE_URL = ':memory:'
   process.env.NODE_ENV = 'test'
+  process.env.SURVEY_API = 'http://localhost:40000/'
   process.env.SESSION_SERVICE_PORT = 24000
   process.env.SESSION_SERVICE = `http://localhost:${process.env.SESSION_SERVICE_PORT}`
   process.env.FILESTORAGE_ACCESS_TOKEN_URL = 'koko'
@@ -27,6 +28,7 @@ module.exports = (g) => {
     }    
   }
   g.sessionSrvcMock = SessionServiceMock.default(process.env.SESSION_SERVICE_PORT, g)
+  g.surveyMock = surveyMock.listen(40000)
 
   g.InitApp = async function (ApiModule) {
     const auth = require('modularni-urad-utils/auth').default
@@ -62,6 +64,7 @@ module.exports = (g) => {
 
   g.close = async function() {
     g.sessionSrvcMock.close()
+    g.surveyMock.close()
     g.server.close()
   }
 }

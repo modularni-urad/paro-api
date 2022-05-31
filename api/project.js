@@ -13,7 +13,7 @@ export default (ctx) => {
   const entityMWBase = ctx.require('entity-api-base').default
   const MW = entityMWBase(conf, knex, ErrorClass)
 
-  return { list, create, update, getCall, publish, uploadinfo }
+  return { list, create, update, getCall, publish, uploadinfo, setstate }
 
   function list (query, schema) {
     query.filter = query.filter ? JSON.parse(query.filter) : {}
@@ -61,6 +61,14 @@ export default (ctx) => {
     if (p[0].state !== PROJECT_STATE.DRAFT) throw new ErrorClass(400, 'not draft')
     return getQB(knex, TABLE_NAMES.PARO_PROJECT, schema)
       .where({ id: projID }).update({ state: PROJECT_STATE.NEW })
+  }
+
+  async function setstate (call, projID, state, schema) {
+    if (call.status === CALL_STATUS.VERIFICATION) {
+      return getQB(knex, TABLE_NAMES.PARO_PROJECT, schema)
+        .where({ id: projID, state: PROJECT_STATE.SUPPORTED }).update({ state })
+    }
+     
   }
 
   async function uploadinfo (callID, user, schema) {

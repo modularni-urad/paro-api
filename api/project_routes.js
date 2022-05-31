@@ -1,4 +1,5 @@
 import MWarez from './project'
+import { GROUPS } from '../consts'
 
 export default (ctx, app) => {
   const { auth, bodyParser } = ctx
@@ -37,6 +38,14 @@ export default (ctx, app) => {
 
   app.put('/:id([0-9]+)/:pid([0-9]+)/publish', getCall, auth.session, (req, res, next) => {
     MW.publish(req.call, req.params.pid, req.tenantid).then(updated => {
+      res.json(updated)
+    }).catch(next)
+  })
+
+  app.put('/:id([0-9]+)/:pid([0-9]+)/setstate/:state', getCall, auth.session, 
+    auth.requireMembership(GROUPS.ADMIN), (req, res, next) => {
+    const {pid, state} = req.params
+    MW.setstate(req.call, pid, state, req.tenantid).then(updated => {
       res.json(updated)
     }).catch(next)
   })

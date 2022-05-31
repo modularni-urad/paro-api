@@ -34,11 +34,11 @@ export default (ctx) => {
       }).catch(next)
     })
 
-  app.put('/:id([0-9]+)/start',
+  app.put('/:id([0-9]+)/forward',
     auth.session,
     auth.requireMembership(GROUPS.ADMIN),
     (req, res, next) => {
-      MW.start(req.params.id, req.tenantid).then(savedid => {
+      MW.forward(req.params.id, req.tenantid).then(savedid => {
         res.json(savedid)
       }).catch(next)
     })

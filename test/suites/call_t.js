@@ -46,7 +46,7 @@ module.exports = (g) => {
       g.mockUser.groups = _.without(g.mockUser.groups, 'paro_admins')
     })
 
-    it('shall get the groups', async () => {
+    it('shall get the items', async () => {
       const res = await r.get(`/`)
       res.body.length.should.eql(1)
       res.body[0].name.should.eql('changed')
