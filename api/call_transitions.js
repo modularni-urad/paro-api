@@ -29,15 +29,17 @@ export async function switch2Voting (call, knex, schema) {
     // create options
     const doable = await getQB(knex, TABLE_NAMES.PARO_PROJECT, schema)
       .where({ call_id: call.id, state: PROJECT_STATE.DOABLE })
-    await Promise.all(doable.map(i => {
+    await doable.reduce((acc, i) => {
       const option = {
         title: i.name,
         desc: i.desc,
         link: `/paro/${call.id}/${i.id}`,
         image: i.photo.split(',')[0]
       }
-      return axios.post(`${SURVEY_API_URL}${survey.id}`, option)
-    }))
+      return acc.then(() => {
+        return axios.post(`${SURVEY_API_URL}${survey.data[0].id}`, option)
+      })
+    }, Promise.resolve())
   } catch (err) {
     if (err.code === 'ECONNREFUSED') {
       console.error(`SURVEY_API_URL ${SURVEY_API_URL} not works`)
